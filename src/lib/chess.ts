@@ -18,6 +18,7 @@ export interface ChessCell {
   coordinate: string;
   color: "light" | "dark";
   piece: ChessPiece | null;
+  selected: boolean;
 }
 
 export type ChessBoard = ChessCell[][];
@@ -54,6 +55,7 @@ export function createInitialBoard(): ChessBoard {
         coordinate,
         color: (row + col) % 2 === 1 ? "dark" : "light",
         piece: getStartingPiece(row, col),
+		selected: false
       };
     }),
   );
