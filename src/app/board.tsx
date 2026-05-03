@@ -1,7 +1,8 @@
 "use client";
 import {
-	ChessCell,
-	Coordinate,
+	attemptMove,
+	type ChessCell,
+	type Coordinate,
 	createInitialBoard,
 	getPieceAssetPath,
 } from "@/lib/chess";
@@ -10,14 +11,6 @@ import { useState } from "react";
 export default function Board() {
 	const [board] = useState(() => createInitialBoard());
 	const [selected, setSelected] = useState<Coordinate | undefined>(undefined);
-
-	const attemptMove = (source: Coordinate, target: Coordinate): boolean => {
-		console.log(
-			`move from \n${JSON.stringify(source)}\n to \n${JSON.stringify(target)}`,
-		);
-
-		return false;
-	};
 
 	const cellClick = (cell: ChessCell) => {
 		// If we don't have any cells selected, just select
@@ -28,7 +21,7 @@ export default function Board() {
 
 		// We have a source and target cell,
 		// let's attempt a move
-		const moveSuccessful = attemptMove(selected, cell.coordinate);
+		const moveSuccessful = attemptMove(board, selected, cell.coordinate);
 
 		if (moveSuccessful) setSelected(undefined);
 		else setSelected(cell.coordinate);

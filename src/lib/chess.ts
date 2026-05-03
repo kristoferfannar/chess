@@ -1,11 +1,16 @@
-export type PieceColor = "white" | "black";
-export type PieceType =
-	| "king"
-	| "queen"
-	| "rook"
-	| "bishop"
-	| "knight"
-	| "pawn";
+export enum PieceColor {
+	WHITE = "white",
+	BLACK = "black",
+}
+
+export enum PieceType {
+	KING = "king",
+	QUEEN = "queen",
+	ROOK = "rook",
+	BISHOP = "bishop",
+	KNIGHT = "knight",
+	PAWN = "pawn",
+}
 
 export class Coordinate {
 	constructor(
@@ -38,30 +43,30 @@ export interface ChessCell {
 
 export type ChessBoard = ChessCell[][];
 
-const fileNames = ["a", "b", "c", "d", "e", "f", "g", "h"];
+const _fileNames = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const backRank: PieceType[] = [
-	"rook",
-	"knight",
-	"bishop",
-	"queen",
-	"king",
-	"bishop",
-	"knight",
-	"rook",
+	PieceType.ROOK,
+	PieceType.KNIGHT,
+	PieceType.BISHOP,
+	PieceType.QUEEN,
+	PieceType.KING,
+	PieceType.BISHOP,
+	PieceType.KNIGHT,
+	PieceType.ROOK,
 ];
 
 function getStartingPiece(row: number, col: number): ChessPiece | null {
-	if (row === 0) return { color: "black", type: backRank[col] };
-	if (row === 1) return { color: "black", type: "pawn" };
-	if (row === 6) return { color: "white", type: "pawn" };
-	if (row === 7) return { color: "white", type: backRank[col] };
+	if (row === 0) return { color: PieceColor.BLACK, type: backRank[col] };
+	if (row === 1) return { color: PieceColor.BLACK, type: PieceType.PAWN };
+	if (row === 6) return { color: PieceColor.WHITE, type: PieceType.PAWN };
+	if (row === 7) return { color: PieceColor.WHITE, type: backRank[col] };
 	return null;
 }
 
 export function createInitialBoard(): ChessBoard {
 	return Array.from({ length: 8 }, (_, row) =>
 		Array.from({ length: 8 }, (_, col) => {
-			const rank = 8 - row;
+			const _rank = 8 - row;
 			const coordinate = new Coordinate(row, col);
 
 			return {
@@ -89,3 +94,102 @@ export function getPieceAssetPath(piece: ChessPiece): string {
 
 	return `/pieces/cburnett/${colorPrefix}${typeCode[piece.type]}.svg`;
 }
+
+const getValidSquares = (
+	board: ChessBoard,
+	piece: ChessPiece,
+	coord: Coordinate,
+): Coordinate[] => {
+	const row = coord.row;
+	const col = coord.col;
+	const validSquares: Coordinate[] = [];
+	switch (piece.type) {
+		case PieceType.PAWN: {
+			// TODO: pawns must promote and therefore cannot live on end ranks
+			if (row === 7 || row === 0) break;
+
+			const direction = piece.color === PieceColor.WHITE ? -1 : 1;
+			const start = piece.color === PieceColor.WHITE ? 6 : 1;
+
+			// Move one straight ahead
+			if (!board[row + direction][col].piece)
+				validSquares.push(new Coordinate(row + direction, col));
+
+			// If at the start position, move two straight ahead
+			if (row === start && !board[row + direction * 2][col].piece)
+				validSquares.push(new Coordinate(row + direction * 2, col));
+
+			if (col > 0) {
+				const left = board[row + direction][col - 1];
+
+				if (left.piece !== null && left.piece.color !== piece.color)
+					validSquares.push(new Coordinate(row + direction, col - 1));
+			}
+
+			if (col < 6) {
+				const right = board[row + direction][col + 1];
+
+				if (right.piece !== null && right.piece.color !== piece.color)
+					validSquares.push(new Coordinate(row + direction, col + 1));
+			}
+
+			break;
+		}
+		case PieceType.KNIGHT: {
+			console.log("knight");
+			break;
+		}
+		case PieceType.BISHOP: {
+			console.log("bishop");
+			break;
+		}
+		case PieceType.KING: {
+			console.log("king");
+			break;
+		}
+		case PieceType.QUEEN: {
+			console.log("queen");
+			break;
+		}
+		case PieceType.ROOK: {
+			console.log("rook");
+			break;
+		}
+	}
+
+	return validSquares;
+};
+
+export const attemptMove = (
+	board: ChessBoard,
+	from: Coordinate,
+	to: Coordinate,
+): boolean => {
+	const fromCell = board[from.row][from.col];
+
+	// Move can't be valid if there's no cell
+	if (!fromCell.piece) return false;
+
+	const validSquares = getValidSquares(
+		board,
+		fromCell.piece,
+		fromCell.coordinate,
+	);
+
+	console.log(`valid squares: ${validSquares.map((v) => JSON.stringify(v))}`);
+	const isValid = validSquares.some((c) => c.equals(to));
+	console.log(`isValid: ${isValid}`);
+
+	if (isValid) {
+		board[to.row][to.col].piece = board[from.row][from.col].piece;
+		board[from.row][from.col].piece = null;
+	}
+	return isValid;
+
+	// console.log(
+	// 	`move from \n${JSON.stringify(from)}\n to \n${JSON.stringify(to)}`,
+	// );
+	// console.log(
+	// 	`! move from \n${JSON.stringify(fromCell)}\n to \n${JSON.stringify(toCell)}`,
+	// );
+};
