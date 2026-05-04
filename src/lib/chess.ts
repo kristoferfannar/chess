@@ -126,7 +126,7 @@ const getValidSquares = (
 					validSquares.push(new Coordinate(row + direction, col - 1));
 			}
 
-			if (col < 6) {
+			if (col < 7) {
 				const right = board[row + direction][col + 1];
 
 				if (right.piece !== null && right.piece.color !== piece.color)
