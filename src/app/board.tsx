@@ -39,29 +39,25 @@ export default function Board() {
 	};
 
 	return (
-		<div
-			className="grid grid-cols-8 grid-rows-8"
-			style={{
-				width: "calc(min(100vw, 100vh) - 8rem)",
-				height: "calc(min(100vw, 100vh) - 8rem)",
-			}}
-		>
-			{board.flat().map((cell) => (
-				<div
-					key={cell.coordinate.key()}
-					className={`flex items-center justify-center ${cellColor(cell)}`}
-					onClick={() => cellClick(cell)}
-				>
-					{cell.piece ? (
-						<img
-							src={getPieceAssetPath(cell.piece)}
-							alt={`${cell.piece.color} ${cell.piece.type}`}
-							className="h-[90%] w-[90%] select-none"
-							draggable={false}
-						/>
-					) : null}
-				</div>
-			))}
+		<div className="flex flex-1 items-center justify-center @container-[size]">
+			<div className="grid grid-cols-8 grid-rows-8 w-[min(100cqw,100cqh)] h-[min(100cqw,100cqh)]">
+				{board.flat().map((cell) => (
+					<div
+						key={cell.coordinate.key()}
+						className={`flex items-center justify-center ${cellColor(cell)}`}
+						onClick={() => cellClick(cell)}
+					>
+						{cell.piece ? (
+							<img
+								src={getPieceAssetPath(cell.piece)}
+								alt={`${cell.piece.color} ${cell.piece.type}`}
+								className="h-[90%] w-[90%] select-none"
+								draggable={false}
+							/>
+						) : null}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }
