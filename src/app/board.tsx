@@ -5,30 +5,25 @@ import {
 	type Coordinate,
 	createInitialBoard,
 	getPieceAssetPath,
+	ChessBoard,
 } from "@/lib/chess";
 import { useState } from "react";
 
-export default function Board() {
-	const [board] = useState(() => createInitialBoard());
-	const [selected, setSelected] = useState<Coordinate | undefined>(undefined);
+type Props = {
+	board: ChessBoard;
+	selectedCell: Coordinate | undefined;
+	setSelectedCellAction: (selected: Coordinate | undefined) => void;
+	handleCellClickAction: (cell: ChessCell) => void;
+};
 
-	const cellClick = (cell: ChessCell) => {
-		// If we don't have any cells selected, just select
-		if (!selected) return setSelected(cell.coordinate);
-
-		// If we select currently selected cell, deselect
-		if (cell.coordinate.equals(selected)) return setSelected(undefined);
-
-		// We have a source and target cell,
-		// let's attempt a move
-		const moveSuccessful = attemptMove(board, selected, cell.coordinate);
-
-		if (moveSuccessful) setSelected(undefined);
-		else setSelected(cell.coordinate);
-	};
-
+export default function Board({
+	board,
+	selectedCell,
+	setSelectedCellAction,
+	handleCellClickAction,
+}: Props) {
 	const cellColor = (cell: ChessCell) => {
-		const isSelected = cell.coordinate === selected;
+		const isSelected = cell.coordinate === selectedCell;
 		if (cell.color === "dark") {
 			if (isSelected) return "bg-sky-700";
 			return "bg-gray-700";
@@ -45,7 +40,7 @@ export default function Board() {
 					<div
 						key={cell.coordinate.key()}
 						className={`flex items-center justify-center ${cellColor(cell)}`}
-						onClick={() => cellClick(cell)}
+						onClick={() => handleCellClickAction(cell)}
 					>
 						{cell.piece ? (
 							<img

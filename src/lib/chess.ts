@@ -1,3 +1,5 @@
+import Board from "@/app/board";
+
 export enum PieceColor {
 	WHITE = "white",
 	BLACK = "black",
@@ -43,6 +45,19 @@ export interface ChessCell {
 
 export type ChessBoard = ChessCell[][];
 
+export type Move = {
+	board: ChessBoard;
+	piece: ChessPiece;
+	from: Coordinate;
+	to: Coordinate;
+};
+
+export type ChessGame = {
+	board: ChessBoard;
+	turn: PieceColor;
+	moves: Move[];
+};
+
 const _fileNames = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const backRank: PieceType[] = [
 	PieceType.ROOK,
@@ -79,6 +94,10 @@ export function createInitialBoard(): ChessBoard {
 			};
 		}),
 	);
+}
+
+export function createInitialGame(): ChessGame {
+	return { board: createInitialBoard(), turn: PieceColor.WHITE, moves: [] };
 }
 
 export function getPieceAssetPath(piece: ChessPiece): string {
@@ -161,28 +180,29 @@ const getValidSquares = (
 };
 
 export const attemptMove = (
-	board: ChessBoard,
+	game: ChessGame,
 	from: Coordinate,
 	to: Coordinate,
 ): boolean => {
-	const fromCell = board[from.row][from.col];
+	const fromCell = game.board[from.row][from.col];
 
 	// Move can't be valid if there's no cell
 	if (!fromCell.piece) return false;
 
+	// Move can't be valid if it's not that pieces turn
+	if (fromCell.piece.color !== game.turn) return false;
+
 	const validSquares = getValidSquares(
-		board,
+		game.board,
 		fromCell.piece,
 		fromCell.coordinate,
 	);
 
-	console.log(`valid squares: ${validSquares.map((v) => JSON.stringify(v))}`);
 	const isValid = validSquares.some((c) => c.equals(to));
-	console.log(`isValid: ${isValid}`);
 
 	if (isValid) {
-		board[to.row][to.col].piece = board[from.row][from.col].piece;
-		board[from.row][from.col].piece = null;
+		game.board[to.row][to.col].piece = game.board[from.row][from.col].piece;
+		game.board[from.row][from.col].piece = null;
 	}
 	return isValid;
 

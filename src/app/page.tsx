@@ -1,11 +1,9 @@
-import Board from "./board";
+import Game from "./game";
 
 export default function Home() {
 	return (
-		<div className="flex flex-1 flex-col font-sans">
-			<main className="flex flex-1 overflow-hidden p-0 md:p-16">
-				<Board />
-			</main>
+		<div className="flex flex-1 flex-col md:flex-row font-sans">
+			<Game />
 		</div>
 	);
 }
