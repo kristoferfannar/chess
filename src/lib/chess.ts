@@ -1,5 +1,3 @@
-import Board from "@/app/board";
-
 export enum PieceColor {
 	WHITE = "white",
 	BLACK = "black",

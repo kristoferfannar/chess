@@ -1,13 +1,10 @@
 "use client";
 import {
-	attemptMove,
+	type ChessBoard,
 	type ChessCell,
 	type Coordinate,
-	createInitialBoard,
 	getPieceAssetPath,
-	ChessBoard,
 } from "@/lib/chess";
-import { useState } from "react";
 
 type Props = {
 	board: ChessBoard;
@@ -19,7 +16,6 @@ type Props = {
 export default function Board({
 	board,
 	selectedCell,
-	setSelectedCellAction,
 	handleCellClickAction,
 }: Props) {
 	const cellColor = (cell: ChessCell) => {
@@ -37,6 +33,8 @@ export default function Board({
 		<div className="flex flex-1 items-center justify-center @container-[size]">
 			<div className="grid grid-cols-8 grid-rows-8 w-[min(100cqw,100cqh)] h-[min(100cqw,100cqh)]">
 				{board.flat().map((cell) => (
+					// biome-ignore lint/a11y/useKeyWithClickEvents: click-only chess UI
+					// biome-ignore lint/a11y/noStaticElementInteractions: click-only chess UI
 					<div
 						key={cell.coordinate.key()}
 						className={`flex items-center justify-center ${cellColor(cell)}`}

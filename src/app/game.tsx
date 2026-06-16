@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
-import Board from "./board";
 import {
 	attemptMove,
-	ChessCell,
-	Coordinate,
+	type ChessCell,
+	type Coordinate,
 	createInitialGame,
-	Move,
+	type Move,
 	PieceColor,
 } from "@/lib/chess";
+import Board from "./board";
 
 export default function Game() {
 	const [game] = useState(() => createInitialGame());

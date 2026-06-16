@@ -7,8 +7,15 @@ The project is currently deployed on [kristoferfannar.com/chess](https://kristof
 
 ## Building
 
+### I don't want to think
 ```bash
 docker-compose up --build
 ```
 
-And open [http://localhost:3000](http://localhost:3000).
+### I want hot reload
+
+```bash
+bun run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
