@@ -112,7 +112,7 @@ export function getPieceAssetPath(piece: ChessPiece): string {
 	return `/pieces/cburnett/${colorPrefix}${typeCode[piece.type]}.svg`;
 }
 
-const getValidSquares = (
+export const getValidSquares = (
 	board: ChessBoard,
 	piece: ChessPiece,
 	coord: Coordinate,
@@ -171,7 +171,7 @@ const getValidSquares = (
 		case PieceType.ROOK: {
 			console.log("rook");
 			break;
-		}
+	}
 	}
 
 	return validSquares;

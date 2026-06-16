@@ -12,21 +12,25 @@ import Board from "./board";
 
 export default function Game() {
 	const [game] = useState(() => createInitialGame());
-	const [selectedCell, setSelectedCellAction] = useState<
-		Coordinate | undefined
-	>(undefined);
+	const [selectedCell, setSelectedCellAction] = useState<ChessCell | undefined>(
+		undefined,
+	);
 
 	const cellClick = (cell: ChessCell) => {
 		// If we don't have any cells selected, just select
-		if (!selectedCell) return setSelectedCellAction(cell.coordinate);
+		if (!selectedCell) return setSelectedCellAction(cell);
 
 		// If we select currently selected cell, deselect
-		if (cell.coordinate.equals(selectedCell))
+		if (cell.coordinate.equals(selectedCell.coordinate))
 			return setSelectedCellAction(undefined);
 
 		// We have a source and target cell,
 		// let's attempt a move
-		const moveSuccessful = attemptMove(game, selectedCell, cell.coordinate);
+		const moveSuccessful = attemptMove(
+			game,
+			selectedCell.coordinate,
+			cell.coordinate,
+		);
 
 		if (moveSuccessful) {
 			setSelectedCellAction(undefined);
@@ -36,11 +40,11 @@ export default function Game() {
 			const move: Move = {
 				board: game.board,
 				piece: cell.piece!,
-				from: selectedCell,
+				from: selectedCell.coordinate,
 				to: cell.coordinate,
 			};
 			game.moves.push(move);
-		} else setSelectedCellAction(cell.coordinate);
+		} else setSelectedCellAction(cell);
 	};
 
 	return (

@@ -4,12 +4,13 @@ import {
 	type ChessCell,
 	type Coordinate,
 	getPieceAssetPath,
+	getValidSquares,
 } from "@/lib/chess";
 
 type Props = {
 	board: ChessBoard;
-	selectedCell: Coordinate | undefined;
-	setSelectedCellAction: (selected: Coordinate | undefined) => void;
+	selectedCell: ChessCell | undefined;
+	setSelectedCellAction: (selected: ChessCell | undefined) => void;
 	handleCellClickAction: (cell: ChessCell) => void;
 };
 
@@ -19,7 +20,7 @@ export default function Board({
 	handleCellClickAction,
 }: Props) {
 	const cellColor = (cell: ChessCell) => {
-		const isSelected = cell.coordinate === selectedCell;
+		const isSelected = cell.coordinate === selectedCell?.coordinate;
 		if (cell.color === "dark") {
 			if (isSelected) return "bg-sky-700";
 			return "bg-gray-700";
@@ -27,6 +28,20 @@ export default function Board({
 			if (isSelected) return "bg-sky-300";
 			return "bg-gray-300";
 		}
+	};
+
+	let validSquares: Coordinate[] = [];
+	if (selectedCell?.piece) {
+		validSquares = getValidSquares(
+			board,
+			selectedCell.piece,
+			selectedCell.coordinate,
+		);
+	}
+
+	const movableColor = (cell: ChessCell) => {
+		if (cell.color === "dark") return "bg-gray-300";
+		return "bg-gray-700";
 	};
 
 	return (
@@ -37,7 +52,7 @@ export default function Board({
 					// biome-ignore lint/a11y/noStaticElementInteractions: click-only chess UI
 					<div
 						key={cell.coordinate.key()}
-						className={`flex items-center justify-center ${cellColor(cell)}`}
+						className={`relative flex items-center justify-center ${cellColor(cell)}`}
 						onClick={() => handleCellClickAction(cell)}
 					>
 						{cell.piece ? (
@@ -48,6 +63,13 @@ export default function Board({
 								draggable={false}
 							/>
 						) : null}
+						{validSquares.some((c) => c.equals(cell.coordinate)) && (
+							<div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+								<div
+									className={`w-1/4 h-1/4 rounded-full ${movableColor(cell)}`}
+								/>
+							</div>
+						)}
 					</div>
 				))}
 			</div>
