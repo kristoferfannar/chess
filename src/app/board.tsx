@@ -40,6 +40,11 @@ export default function Board({
 	}
 
 	const movableColor = (cell: ChessCell) => {
+		if (cell.piece) {
+			if (cell.color === "dark") return "border-gray-300";
+			return "border-gray-700";
+		}
+
 		if (cell.color === "dark") return "bg-gray-300";
 		return "bg-gray-700";
 	};
@@ -59,15 +64,21 @@ export default function Board({
 							<img
 								src={getPieceAssetPath(cell.piece)}
 								alt={`${cell.piece.color} ${cell.piece.type}`}
-								className="h-[90%] w-[90%] select-none"
+								className="h-[90%] w-[90%] z-10 relative select-none"
 								draggable={false}
 							/>
 						) : null}
 						{validSquares.some((c) => c.equals(cell.coordinate)) && (
 							<div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-								<div
-									className={`w-1/4 h-1/4 rounded-full ${movableColor(cell)}`}
-								/>
+								{cell.piece ? (
+									<div
+										className={`w-31/32 h-31/32 rounded-full border-[1.2cqmin] ${movableColor(cell)}`}
+									/>
+								) : (
+									<div
+										className={`w-1/4 h-1/4 rounded-full ${movableColor(cell)}`}
+									/>
+								)}
 							</div>
 						)}
 					</div>
