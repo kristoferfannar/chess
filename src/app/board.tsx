@@ -3,11 +3,13 @@ import {
 	type ChessBoard,
 	type ChessCell,
 	type Coordinate,
+	type PieceColor,
 	getPieceAssetPath,
 	getValidSquares,
 } from "@/lib/chess";
 
 type Props = {
+	turn: PieceColor;
 	board: ChessBoard;
 	selectedCell: ChessCell | undefined;
 	setSelectedCellAction: (selected: ChessCell | undefined) => void;
@@ -15,6 +17,7 @@ type Props = {
 };
 
 export default function Board({
+	turn,
 	board,
 	selectedCell,
 	handleCellClickAction,
@@ -33,6 +36,7 @@ export default function Board({
 	let validSquares: Coordinate[] = [];
 	if (selectedCell?.piece) {
 		validSquares = getValidSquares(
+			turn,
 			board,
 			selectedCell.piece,
 			selectedCell.coordinate,

@@ -113,13 +113,17 @@ export function getPieceAssetPath(piece: ChessPiece): string {
 }
 
 export const getValidSquares = (
+	turn: PieceColor,
 	board: ChessBoard,
 	piece: ChessPiece,
 	coord: Coordinate,
 ): Coordinate[] => {
+	const validSquares: Coordinate[] = [];
+	if (piece.color !== turn) return validSquares;
+
 	const row = coord.row;
 	const col = coord.col;
-	const validSquares: Coordinate[] = [];
+
 	switch (piece.type) {
 		case PieceType.PAWN: {
 			// TODO: pawns must promote and therefore cannot live on end ranks
@@ -171,7 +175,7 @@ export const getValidSquares = (
 		case PieceType.ROOK: {
 			console.log("rook");
 			break;
-	}
+		}
 	}
 
 	return validSquares;
@@ -191,6 +195,7 @@ export const attemptMove = (
 	if (fromCell.piece.color !== game.turn) return false;
 
 	const validSquares = getValidSquares(
+		game.turn,
 		game.board,
 		fromCell.piece,
 		fromCell.coordinate,

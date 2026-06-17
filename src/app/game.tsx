@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
 	attemptMove,
 	type ChessCell,
-	type Coordinate,
 	createInitialGame,
 	type Move,
 	PieceColor,
@@ -54,6 +53,7 @@ export default function Game() {
 			</div>
 			<main className="flex flex-3 overflow-hidden p-0 md:p-16">
 				<Board
+					turn={game.turn}
 					board={game.board}
 					selectedCell={selectedCell}
 					setSelectedCellAction={setSelectedCellAction}
