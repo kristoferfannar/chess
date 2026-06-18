@@ -7,6 +7,9 @@ import {
 	type Move,
 	PieceColor,
 } from "@/lib/chess";
+
+import { useSounds } from "@/lib/sounds";
+
 import Board from "./board";
 
 export default function Game() {
@@ -14,6 +17,8 @@ export default function Game() {
 	const [selectedCell, setSelectedCellAction] = useState<ChessCell | undefined>(
 		undefined,
 	);
+
+	const playSound = useSounds();
 
 	const cellClick = (cell: ChessCell) => {
 		// If we don't have any cells selected, just select
@@ -25,13 +30,13 @@ export default function Game() {
 
 		// We have a source and target cell,
 		// let's attempt a move
-		const moveSuccessful = attemptMove(
+		const moveAttempt = attemptMove(
 			game,
 			selectedCell.coordinate,
 			cell.coordinate,
 		);
 
-		if (moveSuccessful) {
+		if (moveAttempt.success) {
 			setSelectedCellAction(undefined);
 			game.turn =
 				game.turn === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
@@ -43,6 +48,7 @@ export default function Game() {
 				to: cell.coordinate,
 			};
 			game.moves.push(move);
+			playSound(moveAttempt.capture ? "capture" : "move");
 		} else setSelectedCellAction(cell);
 	};
 

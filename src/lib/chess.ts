@@ -181,18 +181,24 @@ export const getValidSquares = (
 	return validSquares;
 };
 
+export type MoveAttempt = {
+	success: boolean;
+	capture: boolean;
+};
+
 export const attemptMove = (
 	game: ChessGame,
 	from: Coordinate,
 	to: Coordinate,
-): boolean => {
+): MoveAttempt => {
 	const fromCell = game.board[from.row][from.col];
 
 	// Move can't be valid if there's no cell
-	if (!fromCell.piece) return false;
+	if (!fromCell.piece) return { success: false, capture: false };
 
 	// Move can't be valid if it's not that pieces turn
-	if (fromCell.piece.color !== game.turn) return false;
+	if (fromCell.piece.color !== game.turn)
+		return { success: false, capture: false };
 
 	const validSquares = getValidSquares(
 		game.turn,
@@ -203,16 +209,11 @@ export const attemptMove = (
 
 	const isValid = validSquares.some((c) => c.equals(to));
 
+	const isCapture = !!game.board[to.row][to.col].piece;
+
 	if (isValid) {
 		game.board[to.row][to.col].piece = game.board[from.row][from.col].piece;
 		game.board[from.row][from.col].piece = null;
 	}
-	return isValid;
-
-	// console.log(
-	// 	`move from \n${JSON.stringify(from)}\n to \n${JSON.stringify(to)}`,
-	// );
-	// console.log(
-	// 	`! move from \n${JSON.stringify(fromCell)}\n to \n${JSON.stringify(toCell)}`,
-	// );
+	return { success: isValid, capture: isCapture };
 };
